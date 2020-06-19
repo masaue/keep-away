@@ -1,19 +1,28 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+/**
+ * App.tsx
+ *
+ * @author masaue
+ */
 
-export default function App() {
+import React from 'react';
+import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import {WebView} from 'react-native-webview';
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <SafeAreaView style={styles.safeAreaView}>
+        <WebView source={{uri: 'https://m.youtube.com'}} />
+      </SafeAreaView>
+    </>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaView: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
+
+export default App;
