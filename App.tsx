@@ -8,21 +8,21 @@ import React from 'react';
 import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
 
-const App = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.safeAreaView}>
-        <WebView source={{uri: 'https://m.youtube.com'}} />
-      </SafeAreaView>
-    </>
-  );
-};
+export default class App extends React.Component {
+  render() {
+    const styles = StyleSheet.create({
+      safeAreaView: {
+        flex: 1,
+      },
+    });
 
-const styles = StyleSheet.create({
-  safeAreaView: {
-    flex: 1,
-  },
-});
-
-export default App;
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView style={styles.safeAreaView}>
+          <WebView source={{uri: 'https://youtube.com'}} />
+        </SafeAreaView>
+      </>
+    );
+  }
+}
