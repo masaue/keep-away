@@ -1,5 +1,5 @@
 /**
- * WebScreen.tsx
+ * BlockScreen.tsx
  *
  * @author masaue
  */
@@ -10,17 +10,20 @@ import {WebView} from 'react-native-webview';
 
 import {RootStackParamList} from '../Navigator';
 
-type WebScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Web'>;
+type BlockScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Block'
+>;
 type Props = {
-  navigation: WebScreenNavigationProp;
+  navigation: BlockScreenNavigationProp;
 };
 
-export default class WebScreen extends React.Component<Props> {
+export default class BlockScreen extends React.Component<Props> {
   render() {
     const {navigation} = this.props;
     setTimeout(() => {
-      navigation.navigate('Block');
+      navigation.navigate('Web');
     }, 3000);
-    return <WebView source={{uri: 'https://m.youtube.com'}} />;
+    return <WebView source={{uri: 'https://google.co.jp'}} />;
   }
 }
