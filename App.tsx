@@ -6,7 +6,8 @@
 
 import React from 'react';
 import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
-import {WebView} from 'react-native-webview';
+
+import Navigator from './src/Navigator';
 
 export default class App extends React.Component {
   render() {
@@ -20,7 +21,7 @@ export default class App extends React.Component {
       <>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView style={styles.safeAreaView}>
-          <WebView source={{uri: 'https://youtube.com'}} />
+          <Navigator />
         </SafeAreaView>
       </>
     );
