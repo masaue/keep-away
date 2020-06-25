@@ -8,19 +8,25 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {WebView} from 'react-native-webview';
 
+import FaceDetector from '../components/FaceDetector';
 import {RootStackParamList} from '../Navigator';
 
-type WebScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Web'>;
+export type WebScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Web'
+>;
+
 type Props = {
   navigation: WebScreenNavigationProp;
 };
 
 export default class WebScreen extends React.Component<Props> {
   render() {
-    const {navigation} = this.props;
-    setTimeout(() => {
-      navigation.navigate('Block');
-    }, 3000);
-    return <WebView source={{uri: 'https://m.youtube.com'}} />;
+    return (
+      <>
+        <FaceDetector navigation={this.props.navigation} />
+        <WebView source={{uri: 'https://m.youtube.com'}} />
+      </>
+    );
   }
 }

@@ -20,10 +20,6 @@ type Props = {
 
 export default class BlockScreen extends React.Component<Props> {
   render() {
-    const {navigation} = this.props;
-    setTimeout(() => {
-      navigation.navigate('Web');
-    }, 3000);
     return <WebView source={{uri: 'https://google.co.jp'}} />;
   }
 }
