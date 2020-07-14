@@ -23,7 +23,9 @@ export default class Navigator extends React.Component {
     return (
       <>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Web">
+          <Stack.Navigator
+            initialRouteName="Web"
+            screenOptions={{headerShown: false}}>
             <Stack.Screen component={BlockScreen} name="Block" />
             <Stack.Screen component={WebScreen} name="Web" />
           </Stack.Navigator>
