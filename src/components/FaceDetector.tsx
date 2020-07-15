@@ -32,8 +32,15 @@ export default (props: Props) => {
   const style = StyleSheet.create({
     camera: {height: 1, width: 1},
   });
-  const handleFacesDetected = (result: FaceDetectionResult) => {
+  let camera: Camera | null;
+  let tookPicture = false;
+  const handleFacesDetected = async (result: FaceDetectionResult) => {
     if (result.faces.length !== 0) {
+      if (!camera || tookPicture) {
+        return;
+      }
+      await camera.takePictureAsync();
+      tookPicture = true;
       /*
       const boundsList = result.faces.map((face) => {
         return face.bounds;
@@ -41,6 +48,7 @@ export default (props: Props) => {
        */
       props.navigation.navigate('Block');
     } else {
+      tookPicture = false;
       props.navigation.navigate('Web');
     }
   };
@@ -54,6 +62,9 @@ export default (props: Props) => {
         tracking: true,
       }}
       onFacesDetected={handleFacesDetected}
+      ref={(instance: Camera | null) => {
+        camera = instance;
+      }}
       style={style.camera}
       type={Camera.Constants.Type.front}
     />
