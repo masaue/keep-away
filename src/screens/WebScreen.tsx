@@ -24,8 +24,9 @@ export default class WebScreen extends React.Component<Props> {
   render() {
     return (
       <>
-        <FaceDetector navigation={this.props.navigation} />
-        <WebView source={{uri: 'https://m.youtube.com'}} />
+        <FaceDetector navigation={this.props.navigation}>
+          <WebView source={{uri: 'https://m.youtube.com'}} />
+        </FaceDetector>
       </>
     );
   }

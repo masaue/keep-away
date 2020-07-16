@@ -13,6 +13,7 @@ import {Dimensions, StyleSheet, Text} from 'react-native';
 import {WebScreenNavigationProp} from '../screens/WebScreen';
 
 type Props = {
+  children: React.ReactNode;
   navigation: WebScreenNavigationProp;
 };
 
@@ -31,7 +32,7 @@ export default (props: Props) => {
     return <Text>No access to camera</Text>;
   }
   const styles = StyleSheet.create({
-    camera: {height: 1, width: 1},
+    camera: {flex: 1},
   });
   const lock = new AsyncLock();
   const windowHeight = Dimensions.get('window').height;
@@ -77,7 +78,8 @@ export default (props: Props) => {
         camera = instance;
       }}
       style={styles.camera}
-      type={Camera.Constants.Type.front}
-    />
+      type={Camera.Constants.Type.front}>
+      {props.children}
+    </Camera>
   );
 };
