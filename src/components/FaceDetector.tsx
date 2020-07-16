@@ -4,6 +4,7 @@
  * @author masaue
  */
 
+import AsyncLock from 'async-lock';
 import {Camera, FaceDetectionResult} from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import React, {useEffect, useState} from 'react';
@@ -32,32 +33,35 @@ export default (props: Props) => {
   const style = StyleSheet.create({
     camera: {height: 1, width: 1},
   });
+  const lock = new AsyncLock();
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
   let camera: Camera | null;
   let tookPicture = false;
-  const handleFacesDetected = async (result: FaceDetectionResult) => {
-    if (result.faces.length !== 0) {
-      if (!camera || tookPicture) {
-        return;
+  const handleFacesDetected = (result: FaceDetectionResult) => {
+    lock.acquire('navigate', async () => {
+      if (result.faces.length !== 0) {
+        if (!camera || tookPicture) {
+          return;
+        }
+        const boundsList = result.faces.map((face) => {
+          const x = face.bounds.origin.x * windowWidth;
+          const y = face.bounds.origin.y * windowHeight;
+          const height = face.bounds.size.height * windowHeight;
+          const width = face.bounds.size.width * windowWidth;
+          return {
+            origin: {x, y},
+            size: {height, width},
+          };
+        });
+        const picture = await camera.takePictureAsync();
+        tookPicture = true;
+        props.navigation.navigate('Block', {boundsList, uri: picture.uri});
+      } else {
+        tookPicture = false;
+        props.navigation.navigate('Web');
       }
-      const boundsList = result.faces.map((face) => {
-        const x = face.bounds.origin.x * windowWidth;
-        const y = face.bounds.origin.y * windowHeight;
-        const height = face.bounds.size.height * windowHeight;
-        const width = face.bounds.size.width * windowWidth;
-        return {
-          origin: {x, y},
-          size: {height, width},
-        };
-      });
-      const picture = await camera.takePictureAsync();
-      tookPicture = true;
-      props.navigation.navigate('Block', {boundsList, uri: picture.uri});
-    } else {
-      tookPicture = false;
-      props.navigation.navigate('Web');
-    }
+    });
   };
   return (
     <Camera
