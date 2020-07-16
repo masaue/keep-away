@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "keepAwayExpo",
-    "slug": "keepAwayExpo",
+    "name": "keep-away",
+    "slug": "keep-away",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "com.disaster_freak.keep_away"
     }
   }
 }
