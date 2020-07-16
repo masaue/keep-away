@@ -7,7 +7,7 @@
 import {Camera, FaceDetectionResult} from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Dimensions, StyleSheet, Text} from 'react-native';
 
 import {WebScreenNavigationProp} from '../screens/WebScreen';
 
@@ -32,6 +32,8 @@ export default (props: Props) => {
   const style = StyleSheet.create({
     camera: {height: 1, width: 1},
   });
+  const windowHeight = Dimensions.get('window').height;
+  const windowWidth = Dimensions.get('window').width;
   let camera: Camera | null;
   let tookPicture = false;
   const handleFacesDetected = async (result: FaceDetectionResult) => {
@@ -39,14 +41,19 @@ export default (props: Props) => {
       if (!camera || tookPicture) {
         return;
       }
-      await camera.takePictureAsync();
-      tookPicture = true;
-      /*
       const boundsList = result.faces.map((face) => {
-        return face.bounds;
+        const x = face.bounds.origin.x * windowWidth;
+        const y = face.bounds.origin.y * windowHeight;
+        const height = face.bounds.size.height * windowHeight;
+        const width = face.bounds.size.width * windowWidth;
+        return {
+          origin: {x, y},
+          size: {height, width},
+        };
       });
-       */
-      props.navigation.navigate('Block');
+      const picture = await camera.takePictureAsync();
+      tookPicture = true;
+      props.navigation.navigate('Block', {boundsList, uri: picture.uri});
     } else {
       tookPicture = false;
       props.navigation.navigate('Web');

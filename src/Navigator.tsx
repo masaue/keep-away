@@ -11,8 +11,13 @@ import React from 'react';
 import BlockScreen from './screens/BlockScreen';
 import WebScreen from './screens/WebScreen';
 
+export type Bounds = {
+  origin: {x: number; y: number};
+  size: {height: number; width: number};
+};
+
 export type RootStackParamList = {
-  Block: undefined;
+  Block: {boundsList: Bounds[]; uri: string};
   Web: undefined;
 };
 
