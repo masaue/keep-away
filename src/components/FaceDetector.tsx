@@ -30,7 +30,7 @@ export default (props: Props) => {
     // TODO アプリ終了
     return <Text>No access to camera</Text>;
   }
-  const style = StyleSheet.create({
+  const styles = StyleSheet.create({
     camera: {height: 1, width: 1},
   });
   const lock = new AsyncLock();
@@ -76,7 +76,7 @@ export default (props: Props) => {
       ref={(instance: Camera | null) => {
         camera = instance;
       }}
-      style={style.camera}
+      style={styles.camera}
       type={Camera.Constants.Type.front}
     />
   );
