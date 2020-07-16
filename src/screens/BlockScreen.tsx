@@ -6,10 +6,11 @@
 
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import * as FaceDetector from 'expo-face-detector';
 import React from 'react';
-import {ImageBackground, StyleSheet, View} from 'react-native';
+import {Dimensions, ImageBackground, StyleSheet, View} from 'react-native';
 
-import {Bounds, RootStackParamList} from '../Navigator';
+import {RootStackParamList} from '../Navigator';
 
 type BlockScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -20,26 +21,25 @@ type Props = {
   navigation: BlockScreenNavigationProp;
   route: BlcokScreenProp;
 };
+type State = {
+  faceRectangles: React.ReactNode[];
+};
 
-export default class BlockScreen extends React.Component<Props> {
-  render() {
-    const faceRectangles = this.props.route.params.boundsList.map(
-      (bounds: Bounds, index: number) => {
-        const styles = StyleSheet.create({
-          faceRectangle: {
-            backgroundColor: 'transparent',
-            borderColor: 'red',
-            borderWidth: 2,
-            height: bounds.size.height,
-            left: bounds.origin.x,
-            position: 'absolute',
-            top: bounds.origin.y,
-            width: bounds.size.width,
-          },
-        });
-        return <View key={index} style={styles.faceRectangle} />;
+export default class BlockScreen extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {faceRectangles: []};
+  }
+
+  componentDidMount() {
+    FaceDetector.detectFacesAsync(this.props.route.params.uri).then(
+      (result) => {
+        this.setState({faceRectangles: this.faceRectangles(result)});
       },
     );
+  }
+
+  render() {
     const styles = StyleSheet.create({
       image: {flex: 1},
     });
@@ -47,8 +47,31 @@ export default class BlockScreen extends React.Component<Props> {
       <ImageBackground
         source={{uri: this.props.route.params.uri}}
         style={styles.image}>
-        {faceRectangles}
+        {this.state.faceRectangles}
       </ImageBackground>
     );
   }
+
+  private faceRectangles = (result: {
+    faces: FaceDetector.FaceFeature[];
+    image: FaceDetector.Image;
+  }) => {
+    const xRatio = Dimensions.get('window').width / result.image.width;
+    const yRatio = Dimensions.get('window').height / result.image.height;
+    return result.faces.map((face, index: number) => {
+      const styles = StyleSheet.create({
+        faceRectangle: {
+          backgroundColor: 'transparent',
+          borderColor: 'red',
+          borderWidth: 2,
+          height: face.bounds.size.height * yRatio,
+          left: face.bounds.origin.x * xRatio,
+          position: 'absolute',
+          top: face.bounds.origin.y * yRatio,
+          width: face.bounds.size.width * xRatio,
+        },
+      });
+      return <View key={index} style={styles.faceRectangle} />;
+    });
+  };
 }

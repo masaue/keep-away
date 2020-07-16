@@ -17,7 +17,7 @@ export type Bounds = {
 };
 
 export type RootStackParamList = {
-  Block: {boundsList: Bounds[]; uri: string};
+  Block: {uri: string};
   Web: undefined;
 };
 
