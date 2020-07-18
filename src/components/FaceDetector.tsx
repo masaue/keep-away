@@ -7,6 +7,7 @@
 import AsyncLock from 'async-lock';
 import {Camera, FaceDetectionResult} from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
+import * as FileSystem from 'expo-file-system';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text} from 'react-native';
 
@@ -36,18 +37,22 @@ export default (props: Props) => {
   });
   const lock = new AsyncLock();
   let camera: Camera | null;
-  let tookPicture = false;
+  let uri = '';
   const handleFacesDetected = (result: FaceDetectionResult) => {
     lock.acquire('navigate', async () => {
       if (result.faces.length !== 0) {
-        if (!camera || tookPicture) {
+        if (!camera || uri) {
           return;
         }
         const picture = await camera.takePictureAsync();
-        tookPicture = true;
-        props.navigation.navigate('Block', {uri: picture.uri});
+        uri = picture.uri;
+        props.navigation.navigate('Block', {uri});
       } else {
-        tookPicture = false;
+        if (!uri) {
+          return;
+        }
+        FileSystem.deleteAsync(uri);
+        uri = '';
         props.navigation.navigate('Web');
       }
     });
