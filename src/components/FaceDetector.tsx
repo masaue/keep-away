@@ -9,7 +9,7 @@ import {Camera, FaceDetectionResult} from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import * as FileSystem from 'expo-file-system';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Dimensions, StyleSheet, Text} from 'react-native';
 
 import {WebScreenNavigationProp} from '../screens/WebScreen';
 
@@ -19,6 +19,7 @@ type Props = {
 };
 
 export default (props: Props) => {
+  const DETECT_FACE_AREA_PERCENT = 20;
   const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
@@ -35,12 +36,25 @@ export default (props: Props) => {
   const styles = StyleSheet.create({
     camera: {flex: 1},
   });
+  const windowHeight = Dimensions.get('window').height;
+  const windowWidth = Dimensions.get('window').width;
+  const area = windowHeight * windowWidth * (DETECT_FACE_AREA_PERCENT / 100);
+  const navigateToBlock = (result: FaceDetectionResult) => {
+    if (result.faces.length === 0) {
+      return false;
+    }
+    return result.faces.some((face) => {
+      const height = face.bounds.size.height;
+      const width = face.bounds.size.width;
+      return height * width > area;
+    });
+  };
   const lock = new AsyncLock();
   let camera: Camera | null;
   let uri = '';
   const handleFacesDetected = (result: FaceDetectionResult) => {
     lock.acquire('navigate', async () => {
-      if (result.faces.length !== 0) {
+      if (navigateToBlock(result)) {
         if (!camera || uri) {
           return;
         }
