@@ -5,7 +5,7 @@
  */
 
 import AsyncLock from 'async-lock';
-import {Camera, FaceDetectionResult} from 'expo-camera';
+import {Camera, CameraType, FaceDetectionResult} from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import * as FileSystem from 'expo-file-system';
 import React, {useEffect, useState} from 'react';
@@ -24,7 +24,7 @@ export default (props: Props) => {
 
   useEffect(() => {
     (async () => {
-      const {status} = await Camera.requestPermissionsAsync();
+      const {status} = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
@@ -44,8 +44,9 @@ export default (props: Props) => {
       return false;
     }
     return result.faces.some((face) => {
-      const height = face.bounds.size.height;
-      const width = face.bounds.size.width;
+      const faceFeature = face as FaceDetector.FaceFeature;
+      const height = faceFeature.bounds.size.height;
+      const width = faceFeature.bounds.size.width;
       return height * width > area;
     });
   };
@@ -74,9 +75,9 @@ export default (props: Props) => {
   return (
     <Camera
       faceDetectorSettings={{
-        mode: FaceDetector.Constants.Mode.fast,
-        detectLandmarks: FaceDetector.Constants.Landmarks.none,
-        runClassifications: FaceDetector.Constants.Classifications.none,
+        mode: FaceDetector.FaceDetectorMode.fast,
+        detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
+        runClassifications: FaceDetector.FaceDetectorClassifications.none,
         minDetectionInterval: 1000,
         tracking: true,
       }}
@@ -85,7 +86,7 @@ export default (props: Props) => {
         camera = instance;
       }}
       style={styles.camera}
-      type={Camera.Constants.Type.front}>
+      type={CameraType.front}>
       {props.children}
     </Camera>
   );
