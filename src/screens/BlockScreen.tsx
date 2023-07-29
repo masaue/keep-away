@@ -18,21 +18,24 @@ type BlockScreenNavigationProp = StackNavigationProp<
 >;
 type BlcokScreenProp = RouteProp<RootStackParamList, 'Block'>;
 type Props = {
-  navigation: BlockScreenNavigationProp;
-  route: BlcokScreenProp;
+  navigation?: BlockScreenNavigationProp;
+  route?: BlcokScreenProp;
 };
 type State = {
   faceRectangles: React.ReactNode[];
 };
 
 export default class BlockScreen extends React.Component<Props, State> {
+  uri: string;
+
   constructor(props: Props) {
     super(props);
     this.state = {faceRectangles: []};
+    this.uri = this.props.route?.params.uri || '';
   }
 
   componentDidMount() {
-    FaceDetector.detectFacesAsync(this.props.route.params.uri).then(
+    FaceDetector.detectFacesAsync(this.uri).then(
       (result) => {
         this.setState({faceRectangles: this.faceRectangles(result)});
       },
@@ -45,7 +48,7 @@ export default class BlockScreen extends React.Component<Props, State> {
     });
     return (
       <ImageBackground
-        source={{uri: this.props.route.params.uri}}
+        source={{uri: this.uri}}
         style={styles.image}>
         {this.state.faceRectangles}
       </ImageBackground>

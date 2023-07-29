@@ -17,7 +17,7 @@ export type WebScreenNavigationProp = StackNavigationProp<
 >;
 
 type Props = {
-  navigation: WebScreenNavigationProp;
+  navigation?: WebScreenNavigationProp;
 };
 
 export default class WebScreen extends React.Component<Props> {

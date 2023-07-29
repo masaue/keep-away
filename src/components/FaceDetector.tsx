@@ -14,8 +14,8 @@ import {Dimensions, StyleSheet, Text} from 'react-native';
 import {WebScreenNavigationProp} from '../screens/WebScreen';
 
 type Props = {
-  children: React.ReactNode;
-  navigation: WebScreenNavigationProp;
+  children?: React.ReactNode;
+  navigation?: WebScreenNavigationProp;
 };
 
 export default (props: Props) => {
@@ -61,14 +61,14 @@ export default (props: Props) => {
         }
         const picture = await camera.takePictureAsync();
         uri = picture.uri;
-        props.navigation.navigate('Block', {uri});
+        props.navigation?.navigate('Block', {uri});
       } else {
         if (!uri) {
           return;
         }
         FileSystem.deleteAsync(uri);
         uri = '';
-        props.navigation.navigate('Web');
+        props.navigation?.navigate('Web');
       }
     });
   };
